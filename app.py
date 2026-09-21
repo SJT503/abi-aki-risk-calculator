@@ -85,7 +85,8 @@ STRINGS = {
               "not for clinical decision-making. Batch mode is processed locally and uploads nothing."),
         tab1="① Single-point calculator", tab2="② Batch prediction (pipeline CSV)",
         batch_desc="Upload a pipeline feature CSV (any feature-column subset) and download per-checkpoint calibrated risk. **Primary mode for research/reproduction.**",
-        upload="Feature CSV", download="⬇ Download predictions", warn2="⚠️ Same disclaimer: research use only.",
+        upload="Feature CSV", download="⬇ Download predictions", warn2="⚠️ Research & education only · not for clinical decisions.",
+        disclaimer='⚠️ <b>Research & education only · not a medical device · not for clinical decisions.</b>\n<details style="margin-top:6px"><summary style="cursor:pointer;color:#0f6e8c">Full disclaimer</summary>\n<div style="font-size:.82rem;color:#5b7083;line-height:1.6;padding-top:6px">\n<b>Intended use</b> — This calculator accompanies a research manuscript. The model was developed in MIMIC-IV v3.1\nand externally validated in eICU-CRD v2.0 (180 hospitals), both retrospective de-identified U.S. ICU databases.\nIt is provided for <b>research, education, and methodological reproduction only</b>.<br>\n<b>Not a medical device</b> — The tool has not been cleared or approved by any regulatory authority (FDA/CE/NMPA),\nhas not been validated prospectively or at the point of care, and must not be used for diagnosis, triage, or\ntreatment decisions. Clinical management remains the responsibility of treating clinicians.<br>\n<b>Performance context</b> — External AUROC 0.709 [0.703–0.716]; calibration maintained by a frozen recalibration\nlayer (ECE 0.019); at the 0.20 working point: median 12.6-h lead time, NNE 2.2, 1.9 false alarms/100 patient-days.\nAll estimates are retrospective; performance may differ in other populations, healthcare systems, or AKI definitions.<br>\n<b>Single-point mode is demonstrative</b> — slider inputs are applied to a training-set median profile;\nuse batch mode with pipeline-generated features for research-grade estimates.<br>\n<b>Privacy</b> — computation runs within your browser session; no entered data are stored or transmitted to the authors.<br>\n<b>Data &amp; code</b> — model artifacts are derived from MIMIC-IV/eICU-CRD under the PhysioNet Data Use Agreement\n(source data not included); code and frozen model are open at github.com/SJT503/abi-aki-risk-calculator.\n</div></details>',
     ),
     "zh": dict(
         lang_label="语言",
@@ -122,7 +123,8 @@ STRINGS = {
               "仅供研究与外部验证复现使用，未经前瞻性验证，不得用于临床决策。批量模式本地处理，不上传任何服务器。"),
         tab1="① 单点计算器", tab2="② 批量预测（管线 CSV）",
         batch_desc="上传管线输出的特征 CSV（任意特征列子集），下载逐检查点校准风险。**研究/复现主模式。**",
-        upload="特征 CSV", download="⬇ 下载预测结果", warn2="⚠️ 同上免责声明：仅供研究用途。",
+        upload="特征 CSV", download="⬇ 下载预测结果", warn2="⚠️ 仅供研究与教育 · 不得用于临床决策。",
+        disclaimer='⚠️ <b>仅供研究与教育 · 非医疗器械 · 不得用于临床决策。</b>\n<details style="margin-top:6px"><summary style="cursor:pointer;color:#0f6e8c">完整免责声明</summary>\n<div style="font-size:.82rem;color:#5b7083;line-height:1.6;padding-top:6px">\n<b>预期用途</b>——本计算器为研究论文配套工具。模型开发于 MIMIC-IV v3.1，外验于 eICU-CRD v2.0（180 家医院），\n均为回顾性去标识化美国 ICU 数据库。仅提供<b>研究、教育与方法学复现</b>用途。<br>\n<b>非医疗器械</b>——本工具未经任何监管机构（FDA/CE/NMPA）注册或批准，未进行前瞻性或床旁验证，\n不得用于诊断、分诊或治疗决策。临床管理责任始终属于主管医生。<br>\n<b>性能背景</b>——外部验证 AUROC 0.709 [0.703–0.716]；校准由冻结重校准层维持（ECE 0.019）；\n0.20 工作点：中位预警提前 12.6 小时，NNE 2.2，假警报 1.9 次/100 病人日。\n以上均为回顾性估计；在其他人群、医疗体系或 AKI 定义下性能可能不同。<br>\n<b>单点模式为演示性质</b>——滑条输入作用于训练集中位画像；研究级估计请使用批量模式（管线特征）。<br>\n<b>隐私</b>——全部计算在浏览器会话内完成；不存储、不向作者传输任何输入数据。<br>\n<b>数据与代码</b>——模型工件在 PhysioNet 数据使用协议下由 MIMIC-IV/eICU-CRD 衍生（不含源数据）；\n代码与冻结模型开源于 github.com/SJT503/abi-aki-risk-calculator。\n</div></details>',
     ),
 }
 LANG = st.sidebar.radio("Language / 语言", ["English", "中文"], index=0, label_visibility="collapsed")
@@ -228,7 +230,7 @@ with tab1:
         st.markdown("</div>", unsafe_allow_html=True)
         with st.expander(f"📐 {T['methods']}"):
             st.markdown("\n".join(f"- {x}" for x in T["methods_items"]))
-    st.markdown(f'<div class="warn">{T["warn"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="warn">{T["disclaimer"]}</div>', unsafe_allow_html=True)
 
 with tab2:
     st.markdown('<div class="card">', unsafe_allow_html=True)
