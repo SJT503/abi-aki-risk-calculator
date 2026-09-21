@@ -64,7 +64,7 @@ STRINGS = {
                 "Suggested review: assess volume status and nephrotoxic exposure; intensify Cr/UO monitoring",
                 "Suggested clinician review: volume status, nephrotoxic agents; nephrology consult if indicated"],
         bands=["LOW", "INTERMEDIATE", "HIGH"],
-        workpoint="Band thresholds 0.10/0.20 match deployment working point; at thr=0.20 (eICU): median lead time 12.6 h · NNE 2.2 · false alarms 1.9/100 patient-days",
+        workpoint="Bands are operating points (not guideline standards): observed AKI rate 5.6/14.3/33.0% (internal), 5.8/18.2/41.6% (external); at 0.20: median lead time 12.6 h · NNE 2.2 · false alarms 1.9/100 patient-days",
         evi_lbl="Model evidence",
         kpi=[("Internal", "M4 temporal 20-22", "95%CI 0.727-0.747"),
              ("External", "eICU 180 hospitals", "95%CI 0.703-0.716"),
@@ -74,7 +74,10 @@ STRINGS = {
                   "<b>Endpoint</b>: incident AKI within 48 h, full KDIGO (Cr∪UO), incident-only<br>"
                   "<b>Cohort</b>: M4 acute brain injury 10,723 ICU stays (TBI/stroke/SAH/ICH/anoxic/encephalitis); "
                   "development 2008-2019, internal validation 2020-2022<br>"
-                  "<b>Explainability</b>: SHAP top = net fluid balance · 24-h urine output · baseline creatinine (fluid-kidney axis)"),
+                  "<b>Explainability</b>: SHAP top = net fluid balance · 24-h urine output · baseline creatinine (fluid-kidney axis)<br>"
+                  "<b>Risk bands</b> (operating points, not guideline standards): observed AKI rate per band "
+                  "5.6 / 14.3 / 33.0% (internal) and 5.8 / 18.2 / 41.6% (external); alert burden NNE 2.2 at 0.20, "
+                  "4.1 at 0.10; sites should re-derive cut-points for local deployment"),
         methods="Methodology & limitations",
         methods_items=["Single-point mode keeps UO-family raw-value features at the median = demonstrative approximation; use batch mode for research",
                        "Cross-DB sampling granularity of variability features (M4 q1h vs eICU q5min) disclosed",
@@ -105,7 +108,7 @@ STRINGS = {
                 "建议复核：评估容量状态与肾毒性暴露，加密 Cr/UO 监测",
                 "建议临床团队复核：评估容量状态、肾毒性药物，必要时肾脏科会诊"],
         bands=["低风险", "中风险", "高风险"],
-        workpoint="分带阈值 0.10/0.20 与部署工作点一致；thr=0.20 实测（eICU）：中位提前预警 12.6h · NNE 2.2 · 假警报 1.9/100 病人日",
+        workpoint="分带为操作点（非指南标准）：各带实测 AKI 率 5.6/14.3/33.0%（内验）、5.8/18.2/41.6%（外验）；0.20 处：中位提前 12.6h · NNE 2.2 · 假警报 1.9/100 病人日",
         evi_lbl="模型证据",
         kpi=[("内部验证", "M4 时间分割 20-22", "95%CI 0.727-0.747"),
              ("外部验证", "eICU 180 医院", "95%CI 0.703-0.716"),
@@ -113,7 +116,10 @@ STRINGS = {
         evi_body=("<b>模型</b>：LightGBM，291 特征（静态/动态窗/LOCF/48h 趋势/变异度 SD·CV/用药/UO-液体/通气），NaN 原生<br>"
                   "<b>终点</b>：未来 48h incident AKI，完整 KDIGO（Cr∪UO），incident-only<br>"
                   "<b>队列</b>：M4 急性脑损伤 10,723 stays（TBI/卒中/SAH/ICH/缺氧/脑炎）；开发 2008-2019，内验 2020-2022<br>"
-                  "<b>可解释性</b>：SHAP top = 净液体平衡 · 24h 尿量 · 基线肌酐（液体-肾脏轴）"),
+                  "<b>可解释性</b>：SHAP top = 净液体平衡 · 24h 尿量 · 基线肌酐（液体-肾脏轴）<br>"
+                  "<b>风险分带</b>（操作点而非指南标准）：各带实测 AKI 率 5.6/14.3/33.0%（内验）与 "
+                  "5.8/18.2/41.6%（外验）；警报负担 NNE 2.2（0.20 处）与 4.1（0.10 处）；"
+                  "部署中心应按本地情况重新设定阈值"),
         methods="方法学与局限",
         methods_items=["单点模式尿量同族原始值保持中位=演示性近似；研究请用批量模式",
                        "变异度特征跨库采样粒度差（M4 q1h vs eICU q5min）已披露",
