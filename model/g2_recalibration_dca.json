@@ -1,0 +1,8 @@
+{
+ "recal_layer_frozen": {
+  "form": "p* = logistic(a + b·logit(p))",
+  "a_intercept": -0.5414,
+  "b_slope": 0.3569,
+  "fit_on": "select 18-19 (n=29507, 2362+)"
+ }
+}
