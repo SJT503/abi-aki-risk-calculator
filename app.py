@@ -34,7 +34,7 @@ st.markdown("""
   .risk-num { font-size:3.1rem; font-weight:700; line-height:1; }
   .lbl { font-size:.78rem; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); }
   .gauge { position:relative; height:14px; border-radius:7px; margin:10px 0 4px;
-           background:linear-gradient(90deg,#2e7d32 0%,#2e7d32 30%,#f9a825 45%,#f9a825 60%,#c62828 78%,#c62828 100%); }
+           background:linear-gradient(90deg,#2e7d32 0%,#2e7d32 19.6%,#f9a825 20.4%,#f9a825 39.6%,#c62828 40.4%,#c62828 100%); }
   .gauge .pin { position:absolute; top:-5px; width:4px; height:24px; background:#1a2b3c; border-radius:2px;
                 box-shadow:0 0 0 2px #fff; transform:translateX(-50%); }
   .gauge-ticks { display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted); }
@@ -192,6 +192,17 @@ with tab1:
                     "uo_ml_kg_h_24h": uo_24, "net_balance_ml_kg": net_bal, "uo_n": uo_n,
                     "t_hr": t_hr, "sbp_last": sbp_last, "hr_rate_last": hr_last,
                     "bun_last": bun_last, "norepi_on": int(norepi_on)})
+    # ---- 族联动：滑条改变同步其临床同源特征（否则被中位画像的其余 279 列遮蔽，单滑条几乎无响应）----
+    profile.update({  # 肌酐族：可从 base/last 精确推导
+        "cr_locf": cr_last, "cr_full_locf": cr_last, "cr_last48": cr_last,
+        "cr_ratio_base": cr_last / max(cr_base, 0.1), "cr_delta_since_adm": cr_last - cr_base,
+        "cr_min": min(cr_last, cr_base), "cr_max": max(cr_last, cr_base)})
+    profile.update({  # BUN/生命体征族：LOCF 同值（临床上同一时点测量）
+        "bun_locf": bun_last, "bun_last48": bun_last,
+        "sbp_locf": sbp_last, "sbp_last48": sbp_last, "hr_rate_locf": hr_last, "hr_rate_last48": hr_last})
+    if norepi_on:  # 用药族：开升压药则 24h 内有启动
+        profile["norepi_n24"] = max(int(DEFAULTS.get("norepi_n24", 0)), 1)
+    profile["uo_tot48"] = uo_24 * 24.0 * 2.0  # 尿量族近似：假设 48h 同率（披露为演示近似）
     p_raw, p_cal = predict_risk(pd.DataFrame([profile]))
     p = float(p_cal[0])
     nm, color, action = band(p)
@@ -202,7 +213,7 @@ with tab1:
         st.markdown(f'<div class="lbl">{T["risk_lbl"]}</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="risk-num" style="color:{color}">{p*100:.1f}%</div>', unsafe_allow_html=True)
         st.markdown(f"""
-        <div class="gauge"><div class="pin" style="left:{min(max(p,0),1)*100:.1f}%"></div></div>
+        <div class="gauge"><div class="pin" style="left:{min(max(p/0.5,0),1)*100:.1f}%"></div></div>
         <div class="gauge-ticks"><span>{T['ticks'][0]}</span><span>{T['ticks'][1]}</span><span>{T['ticks'][2]}</span><span>{T['ticks'][3]}</span></div>
         <div style="margin-top:10px"><span style="color:{color};font-weight:700;font-size:1.05rem">{nm}</span>
         &nbsp;·&nbsp;<span style="color:#5b7083;font-size:.85rem">{T['raw_cal'].format(a=f"{p_raw[0]*100:.1f}", b=f"{p*100:.1f}")}</span></div>
