@@ -1,0 +1,8 @@
+# PhysioNet-derived patient rows must never be committed (data use agreement)
+examples_local/
+*.parquet
+results/
+__pycache__/
+*.pyc
+.pytest_cache/
+.gate_passed

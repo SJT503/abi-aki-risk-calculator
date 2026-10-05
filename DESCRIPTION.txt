@@ -1,0 +1,1 @@
+Rolling two-tier AKI risk model after acute brain injury — 268-feature LightGBM with frozen dual recalibration, externally validated across 171 eICU hospitals

@@ -1,264 +1,91 @@
-# -*- coding: utf-8 -*-
-"""ABI-AKI Rolling Risk Calculator — bilingual (EN default / 中文), journal-style UI
-Model: LightGBM 291-feature frozen (n6, D33) + select-fit recalibration layer (g2)
-Validation: M4 internal 0.7369 / eICU external 0.7094 (zero-touch, 180 hospitals)
-Run: streamlit run app.py
-⚠️ Research use only — not for clinical decision-making
-"""
-import json
-import os
+"""Streamlit research demonstration of the rolling two-tier ABI-AKI model.
 
-import joblib
-import numpy as np
+Run:  pip install -r requirements.txt && streamlit run app.py
+All computation is local; uploaded files are not stored or transmitted.
+"""
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
-BASE = os.path.dirname(os.path.abspath(__file__))
-# 云部署包结构优先（./model/），本地开发回退（../results/）
-MODEL_DIR = os.path.join(BASE, "model") if os.path.exists(os.path.join(BASE, "model")) else os.path.join(BASE, "..", "results")
+import riskcalc
 
-st.set_page_config(page_title="ABI-AKI Risk Calculator", page_icon="🧠", layout="wide",
-                   initial_sidebar_state="expanded")
+TIER1_REF, TIER2_REF = 0.15, 0.05  # reference lines only (development-side views; confirm locally)
+ROOT = Path(__file__).resolve().parent
+LOCAL_EX = ROOT / "examples_local"
 
-st.markdown("""
-<style>
-  :root { --ink:#1a2b3c; --muted:#5b7083; --accent:#0f6e8c; --card:#ffffff; --bg:#f6f8fa; }
-  .stApp { background: var(--bg); font-family: 'Source Sans Pro','Segoe UI',system-ui,sans-serif; color: var(--ink); }
-  section[data-testid="stSidebar"] { background:#ffffff; border-right:1px solid #e3e9ef; }
-  section[data-testid="stSidebar"] * { font-size:.92rem; }
-  .hdr { display:flex; align-items:center; gap:14px; padding:18px 22px; margin-bottom:14px;
-         background:linear-gradient(90deg,#0f2f4a 0%,#0f6e8c 100%); border-radius:12px; color:#fff; }
-  .hdr .badge { background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35);
-                padding:3px 10px; border-radius:999px; font-size:.78rem; letter-spacing:.4px; }
-  .card { background:var(--card); border:1px solid #e3e9ef; border-radius:12px; padding:18px 20px; }
-  .risk-num { font-size:3.1rem; font-weight:700; line-height:1; }
-  .lbl { font-size:.78rem; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); }
-  .gauge { position:relative; height:14px; border-radius:7px; margin:10px 0 4px;
-           background:linear-gradient(90deg,#2e7d32 0%,#2e7d32 19.6%,#f9a825 20.4%,#f9a825 39.6%,#c62828 40.4%,#c62828 100%); }
-  .gauge .pin { position:absolute; top:-5px; width:4px; height:24px; background:#1a2b3c; border-radius:2px;
-                box-shadow:0 0 0 2px #fff; transform:translateX(-50%); }
-  .gauge-ticks { display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted); }
-  .kpi { padding:10px 6px; background:#f2f6f8; border-radius:10px; }
-  .kpi .v { font-size:1.15rem; font-weight:700; }
-  .evi { font-size:.85rem; color:var(--muted); line-height:1.55; }
-  .evi b { color:var(--ink); }
-  .warn { background:#fff8e6; border:1px solid #eadfa8; border-radius:10px; padding:10px 14px; font-size:.82rem; }
-</style>
-""", unsafe_allow_html=True)
-
-STRINGS = {
-    "en": dict(
-        lang_label="Language",
-        sidebar_title="🧾 Patient features",
-        sidebar_caption="Base = training-set typical patient (median profile of 291 features); adjust key items",
-        age="Age (yr)", charlson="Charlson index", cr_base="Baseline creatinine mg/dL (min of first 24 h)",
-        cr_last="Current creatinine mg/dL", uo="24-h urine output (mL/kg/h)",
-        net="Cumulative net balance (mL/kg; neg = net output)", uo_n="UO chart entries in 24 h",
-        t_hr="Checkpoint (ICU hour)", sbp="Systolic BP mmHg", hr="Heart rate bpm", bun="Current BUN mg/dL",
-        norepi="On/prior norepinephrine",
-        risk_lbl="Calibrated 48-h AKI risk (deployment)",
-        ticks=["0%", "10% low/int", "20% int/high", "50%+"],
-        raw_cal="raw {a}% → select-fit calibrated {b}%",
-        action_lbl="Suggested action (demo)",
-        action=["Routine monitoring; renal function per unit protocol",
-                "Suggested review: assess volume status and nephrotoxic exposure; intensify Cr/UO monitoring",
-                "Suggested clinician review: volume status, nephrotoxic agents; nephrology consult if indicated"],
-        bands=["LOW", "INTERMEDIATE", "HIGH"],
-        workpoint="Bands are operating points (not guideline standards): observed AKI rate 5.6/14.3/33.0% (internal), 5.8/18.2/41.6% (external); at 0.20: median lead time 12.6 h · NNE 2.2 · false alarms 1.9/100 patient-days",
-        evi_lbl="Model evidence",
-        kpi=[("Internal", "M4 temporal 20-22", "95%CI 0.727-0.747"),
-             ("External", "eICU 180 hospitals", "95%CI 0.703-0.716"),
-             ("Calibrated ECE", "select-fit layer", "internal 0.013")],
-        evi_body=("<b>Model</b>: LightGBM, 291 features (static / rolling windows / LOCF / 48-h trends / "
-                  "variability SD·CV / medications / UO-fluids / ventilation), NaN-native<br>"
-                  "<b>Endpoint</b>: incident AKI within 48 h, full KDIGO (Cr∪UO), incident-only<br>"
-                  "<b>Cohort</b>: M4 acute brain injury 10,723 ICU stays (TBI/stroke/SAH/ICH/anoxic/encephalitis); "
-                  "development 2008-2019, internal validation 2020-2022<br>"
-                  "<b>Explainability</b>: SHAP top = net fluid balance · 24-h urine output · baseline creatinine (fluid-kidney axis)<br>"
-                  "<b>Risk bands</b> (operating points, not guideline standards): observed AKI rate per band "
-                  "5.6 / 14.3 / 33.0% (internal) and 5.8 / 18.2 / 41.6% (external); alert burden NNE 2.2 at 0.20, "
-                  "4.1 at 0.10; sites should re-derive cut-points for local deployment"),
-        methods="Methodology & limitations",
-        methods_items=["Single-point mode keeps UO-family raw-value features at the median = demonstrative approximation; use batch mode for research",
-                       "Cross-DB sampling granularity of variability features (M4 q1h vs eICU q5min) disclosed",
-                       "Riley patient-level sample size not met (checkpoint EPPP 23.4 met); SMOTE sensitivity Δ+0.010",
-                       "SHAP interactions not performed (infeasible at 291 features); age ≥80 subgroup AUROC 0.67 (internal)"],
-        warn=("⚠️ <b>Disclaimer</b>: developed on retrospective public databases (MIMIC-IV v3.1 / eICU-CRD v2.0). "
-              "For research and external-validation reproduction only; not validated prospectively; "
-              "not for clinical decision-making. Batch mode is processed locally and uploads nothing."),
-        tab1="① Single-point calculator", tab2="② Batch prediction (pipeline CSV)",
-        batch_desc="Upload a pipeline feature CSV (any feature-column subset) and download per-checkpoint calibrated risk. **Primary mode for research/reproduction.**",
-        upload="Feature CSV", download="⬇ Download predictions", warn2="🧭 Decision-support research tool · supports, not replaces, clinical judgment.",
-        disclaimer='🧭 <b>A decision-support research tool — supports, not replaces, clinical judgment.</b>\n<details style="margin-top:6px"><summary style="cursor:pointer;color:#0f6e8c">About &amp; disclaimer</summary>\n<div style="font-size:.82rem;color:#5b7083;line-height:1.7;padding-top:6px">\n<b>Intended use</b> — identifies acute-brain-injury ICU patients who may benefit from closer renal monitoring; provides calibrated 48-h AKI risk for research, quality improvement, and cohort enrichment; enables local validation on your own data.<br>\n<b>Boundaries</b> — developed and validated retrospectively (MIMIC-IV; external eICU, 180 hospitals); not cleared as a medical device (FDA/CE/NMPA); not the sole basis for clinical decisions.<br>\n<b>Next step</b> — the alerting profile (median 12.6-h lead time, NNE 2.2, positive net benefit) supports prospective silent-mode evaluation.<br>\nComputed in-browser; nothing stored or transmitted. Code &amp; model: github.com/SJT503/abi-aki-risk-calculator\n</div></details>'
-    ),
-    "zh": dict(
-        lang_label="语言",
-        sidebar_title="🧾 患者特征",
-        sidebar_caption="底座=训练集典型患者（291 特征中位画像），调整核心项",
-        age="年龄（岁）", charlson="Charlson 指数", cr_base="基线肌酐 mg/dL（首 24h 最小）",
-        cr_last="当前肌酐 mg/dL", uo="24h 尿量（mL/kg/h）",
-        net="累计净平衡（mL/kg，负=净排出）", uo_n="24h 尿量记录次数",
-        t_hr="检查点（ICU 小时）", sbp="收缩压 mmHg", hr="心率 bpm", bun="当前 BUN mg/dL",
-        norepi="正在/曾用去甲肾上腺素",
-        risk_lbl="校准后 48h AKI 风险（部署口径）",
-        ticks=["0%", "10% 低/中界", "20% 中/高界", "50%+"],
-        raw_cal="原始概率 {a}% → select-fit 校准 {b}%",
-        action_lbl="建议行动（演示）",
-        action=["常规监测；按科室流程复查肾功能",
-                "建议复核：评估容量状态与肾毒性暴露，加密 Cr/UO 监测",
-                "建议临床团队复核：评估容量状态、肾毒性药物，必要时肾脏科会诊"],
-        bands=["低风险", "中风险", "高风险"],
-        workpoint="分带为操作点（非指南标准）：各带实测 AKI 率 5.6/14.3/33.0%（内验）、5.8/18.2/41.6%（外验）；0.20 处：中位提前 12.6h · NNE 2.2 · 假警报 1.9/100 病人日",
-        evi_lbl="模型证据",
-        kpi=[("内部验证", "M4 时间分割 20-22", "95%CI 0.727-0.747"),
-             ("外部验证", "eICU 180 医院", "95%CI 0.703-0.716"),
-             ("校准后 ECE", "select-fit 层", "内验 0.013")],
-        evi_body=("<b>模型</b>：LightGBM，291 特征（静态/动态窗/LOCF/48h 趋势/变异度 SD·CV/用药/UO-液体/通气），NaN 原生<br>"
-                  "<b>终点</b>：未来 48h incident AKI，完整 KDIGO（Cr∪UO），incident-only<br>"
-                  "<b>队列</b>：M4 急性脑损伤 10,723 stays（TBI/卒中/SAH/ICH/缺氧/脑炎）；开发 2008-2019，内验 2020-2022<br>"
-                  "<b>可解释性</b>：SHAP top = 净液体平衡 · 24h 尿量 · 基线肌酐（液体-肾脏轴）<br>"
-                  "<b>风险分带</b>（操作点而非指南标准）：各带实测 AKI 率 5.6/14.3/33.0%（内验）与 "
-                  "5.8/18.2/41.6%（外验）；警报负担 NNE 2.2（0.20 处）与 4.1（0.10 处）；"
-                  "部署中心应按本地情况重新设定阈值"),
-        methods="方法学与局限",
-        methods_items=["单点模式尿量同族原始值保持中位=演示性近似；研究请用批量模式",
-                       "变异度特征跨库采样粒度差（M4 q1h vs eICU q5min）已披露",
-                       "Riley 患者级严格样本量未达标（检查点 EPPP 23.4 达标）；SMOTE 敏感性 Δ+0.010",
-                       "SHAP 交互未执行（291 特征计算不可行）；≥80 岁亚组 AUROC 0.67（内验）"],
-        warn=("⚠️ <b>免责声明</b>：本工具基于回顾性公开数据库（MIMIC-IV v3.1 / eICU-CRD v2.0）开发，"
-              "仅供研究与外部验证复现使用，未经前瞻性验证，不得用于临床决策。批量模式本地处理，不上传任何服务器。"),
-        tab1="① 单点计算器", tab2="② 批量预测（管线 CSV）",
-        batch_desc="上传管线输出的特征 CSV（任意特征列子集），下载逐检查点校准风险。**研究/复现主模式。**",
-        upload="特征 CSV", download="⬇ 下载预测结果", warn2="🧭 临床决策支持研究工具 · 辅助而非替代临床判断。",
-        disclaimer='🧭 <b>临床决策支持研究工具——辅助而非替代临床判断。</b>\n<details style="margin-top:6px"><summary style="cursor:pointer;color:#0f6e8c">关于本工具与免责</summary>\n<div style="font-size:.82rem;color:#5b7083;line-height:1.7;padding-top:6px">\n<b>用途</b>——识别可能受益于强化肾监测的急性脑损伤 ICU 患者；为研究、质量改进与队列富集提供校准的 48h AKI 风险；支持在自有数据上本地验证。<br>\n<b>边界</b>——基于回顾性数据开发与验证（MIMIC-IV 开发；eICU 180 家医院外验）；未按医疗器械注册（FDA/CE/NMPA）；不作为临床决策的唯一依据。<br>\n<b>下一步</b>——预警特性（中位提前 12.6h、NNE 2.2、正净效益）支持前瞻性静默模式评估。<br>\n浏览器内计算，不存储不传输。代码与模型：github.com/SJT503/abi-aki-risk-calculator\n</div></details>'
-    ),
-}
-LANG = st.sidebar.radio("Language / 语言", ["English", "中文"], index=0, label_visibility="collapsed")
-T = STRINGS["en" if LANG == "English" else "zh"]
-
-st.markdown(f"""
-<div class="hdr">
-  <div style="font-size:1.9rem">🧠</div>
-  <div>
-    <div style="font-size:1.28rem;font-weight:700">Acute Brain Injury · Rolling AKI Risk</div>
-    <div style="font-size:.82rem;opacity:.9">{'急性脑损伤 ICU 滚动 AKI 风险预测 · 6h 检查点 × 未来 48h（完整 KDIGO Cr∪UO）' if LANG=='中文' else 'Rolling 48-h incident AKI prediction at 6-h checkpoints · full KDIGO (Cr∪UO)'}</div>
-  </div>
-  <div class="badge" style="margin-left:auto">v2026.09.22 · external eICU n=9,071</div>
-</div>
-""", unsafe_allow_html=True)
+st.set_page_config(page_title="ABI-AKI two-tier risk (research demo)", layout="wide")
+st.error("**Research demonstration, not a clinical decision tool; confirm thresholds locally.** "
+         "Outputs have not been prospectively validated and must not guide patient care.")
+st.title("Rolling two-tier AKI risk after acute brain injury")
+st.caption("Tier 1: any AKI (KDIGO creatinine ≥Stage 1). Tier 2: severe AKI (≥Stage 3). "
+           "Each checkpoint row → frozen 268-feature LightGBM → frozen recalibration p_rec = logistic(a + b·logit(p)).")
 
 
 @st.cache_resource
-def load_chain():
-    frozen = joblib.load(os.path.join(MODEL_DIR, "n6_abi_gbm_frozen.joblib"))
-    layer = json.load(open(os.path.join(MODEL_DIR, "g2_recalibration_dca.json"), encoding="utf-8"))["recal_layer_frozen"]
-    defaults = json.load(open(os.path.join(BASE, "defaults.json"), encoding="utf-8"))
-    return frozen["feats"], frozen["model"], float(layer["a_intercept"]), float(layer["b_slope"]), defaults
+def _models():
+    return riskcalc.load_models()
 
 
-FEATS, MODEL, A, B, DEFAULTS = load_chain()
+models = _models()
+feats = models["tier1"]["features"]
+with st.sidebar:
+    st.subheader("Frozen recalibration layers")
+    st.write(f"Tier 1: a = {models['tier1']['a']}, b = {models['tier1']['b']}")
+    st.write(f"Tier 2: a = {models['tier2']['a']}, b = {models['tier2']['b']}")
+    st.caption("Read at runtime from model/calibration_and_manifest.json.")
+    st.subheader("Reference lines")
+    st.write(f"Tier 1: {TIER1_REF}  ·  Tier 2: {TIER2_REF}")
+    st.download_button("Download 268-column template", (ROOT / "examples/feature_template.csv").read_bytes(),
+                       "feature_template.csv", "text/csv")
 
-
-def predict_risk(df: pd.DataFrame):
-    X = df.reindex(columns=FEATS)
-    p_raw = MODEL.predict_proba(X)[:, 1]
-    z = np.log(np.clip(p_raw, 1e-6, 1 - 1e-6) / (1 - np.clip(p_raw, 1e-6, 1 - 1e-6)))
-    p_cal = 1 / (1 + np.exp(-(A + B * z)))
-    return p_raw, p_cal
-
-
-def band(p):
-    idx = 0 if p < 0.10 else (1 if p < 0.20 else 2)
-    return T["bands"][idx], ["#2e7d32", "#b8860b", "#c62828"][idx], T["action"][idx]
-
-
-tab1, tab2 = st.tabs([T["tab1"], T["tab2"]])
-
-with tab1:
-    with st.sidebar:
-        st.markdown(f"### {T['sidebar_title']}")
-        st.caption(T["sidebar_caption"])
-        age = st.slider(T["age"], 18, 95, int(DEFAULTS["age"]))
-        charlson = st.slider(T["charlson"], 0, 15, int(DEFAULTS["charlson"]))
-        cr_base = st.number_input(T["cr_base"], 0.2, 8.0, float(DEFAULTS["cr_base"]), 0.1)
-        cr_last = st.number_input(T["cr_last"], 0.2, 10.0, float(DEFAULTS["cr_last"]), 0.1)
-        st.divider()
-        uo_24 = st.slider(T["uo"], 0.0, 4.0, round(float(DEFAULTS["uo_ml_kg_h_24h"]), 2), 0.05)
-        net_bal = st.slider(T["net"], -120.0, 460.0, round(float(DEFAULTS["net_balance_ml_kg"]), 1), 5.0)
-        uo_n = st.slider(T["uo_n"], 0, 30, int(DEFAULTS["uo_n"]))
-        t_hr = st.slider(T["t_hr"], 24, 168, int(DEFAULTS["t_hr"]), 6)
-        st.divider()
-        sbp_last = st.slider(T["sbp"], 60, 220, int(DEFAULTS["sbp_last"]))
-        hr_last = st.slider(T["hr"], 30, 180, int(DEFAULTS["hr_rate_last"]))
-        bun_last = st.number_input(T["bun"], 2.0, 150.0, float(DEFAULTS["bun_last"]), 1.0)
-        norepi_on = st.checkbox(T["norepi"], value=bool(DEFAULTS["norepi_on"]))
-
-    profile = dict(DEFAULTS)
-    profile.update({"age": age, "charlson": charlson, "cr_base": cr_base, "cr_last": cr_last,
-                    "uo_ml_kg_h_24h": uo_24, "net_balance_ml_kg": net_bal, "uo_n": uo_n,
-                    "t_hr": t_hr, "sbp_last": sbp_last, "hr_rate_last": hr_last,
-                    "bun_last": bun_last, "norepi_on": int(norepi_on)})
-    # ---- 族联动：滑条改变同步其临床同源特征（否则被中位画像的其余 279 列遮蔽，单滑条几乎无响应）----
-    profile.update({  # 肌酐族：可从 base/last 精确推导
-        "cr_locf": cr_last, "cr_full_locf": cr_last, "cr_last48": cr_last,
-        "cr_ratio_base": cr_last / max(cr_base, 0.1), "cr_delta_since_adm": cr_last - cr_base,
-        "cr_min": min(cr_last, cr_base), "cr_max": max(cr_last, cr_base)})
-    profile.update({  # BUN/生命体征族：LOCF 同值（临床上同一时点测量）
-        "bun_locf": bun_last, "bun_last48": bun_last,
-        "sbp_locf": sbp_last, "sbp_last48": sbp_last, "hr_rate_locf": hr_last, "hr_rate_last48": hr_last})
-    if norepi_on:  # 用药族：开升压药则 24h 内有启动
-        profile["norepi_n24"] = max(int(DEFAULTS.get("norepi_n24", 0)), 1)
-    profile["uo_tot48"] = uo_24 * 24.0 * 2.0  # 尿量族近似：假设 48h 同率（披露为演示近似）
-    p_raw, p_cal = predict_risk(pd.DataFrame([profile]))
-    p = float(p_cal[0])
-    nm, color, action = band(p)
-
-    cL, cR = st.columns([1.15, 1])
-    with cL:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown(f'<div class="lbl">{T["risk_lbl"]}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="risk-num" style="color:{color}">{p*100:.1f}%</div>', unsafe_allow_html=True)
-        st.markdown(f"""
-        <div class="gauge"><div class="pin" style="left:{min(max(p/0.5,0),1)*100:.1f}%"></div></div>
-        <div class="gauge-ticks"><span>{T['ticks'][0]}</span><span>{T['ticks'][1]}</span><span>{T['ticks'][2]}</span><span>{T['ticks'][3]}</span></div>
-        <div style="margin-top:10px"><span style="color:{color};font-weight:700;font-size:1.05rem">{nm}</span>
-        &nbsp;·&nbsp;<span style="color:#5b7083;font-size:.85rem">{T['raw_cal'].format(a=f"{p_raw[0]*100:.1f}", b=f"{p*100:.1f}")}</span></div>
-        """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown(f"""
-        <div class="card" style="margin-top:12px;border-left:4px solid {color}">
-        <div class="lbl">{T['action_lbl']}</div>
-        <div style="margin-top:6px">{action}</div>
-        <div class="evi" style="margin-top:8px">{T['workpoint']}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with cR:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown(f'<div class="lbl">{T["evi_lbl"]}</div>', unsafe_allow_html=True)
-        k1, k2, k3 = T["kpi"]
-        st.markdown(f"""
-        <div style="display:flex;gap:10px;margin-top:8px">
-          <div class="kpi" style="flex:1"><div class="lbl">{k1[0]}</div><div class="v">0.737</div><div class="evi">{k1[1]}<br>{k1[2]}</div></div>
-          <div class="kpi" style="flex:1"><div class="lbl">{k2[0]}</div><div class="v">0.709</div><div class="evi">{k2[1]}<br>{k2[2]}</div></div>
-          <div class="kpi" style="flex:1"><div class="lbl">{k3[0]}</div><div class="v">0.019</div><div class="evi">{k3[1]}<br>{k3[2]}</div></div>
-        </div>
-        <div class="evi" style="margin-top:12px">{T['evi_body']}</div>
-        """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        with st.expander(f"📐 {T['methods']}"):
-            st.markdown("\n".join(f"- {x}" for x in T["methods_items"]))
-    st.markdown(f'<div class="warn">{T["disclaimer"]}</div>', unsafe_allow_html=True)
-
-with tab2:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown(T["batch_desc"])
-    up = st.file_uploader(T["upload"], type=["csv"])
+sources = {}
+if LOCAL_EX.is_dir():
+    for f in sorted(LOCAL_EX.glob("*.csv")):
+        sources[f"Local example: {f.stem}"] = f
+choice = st.radio("Input", ["Upload a checkpoint-feature CSV"] + list(sources), horizontal=True)
+df = None
+if choice.startswith("Upload"):
+    up = st.file_uploader("One row per six-hour checkpoint; columns stay_id + the 268 model features "
+                          "(see template; blanks = missing, handled natively).", type="csv")
     if up is not None:
-        d = pd.read_csv(up)
-        p_raw, p_cal = predict_risk(d)
-        d["p_raw"] = p_raw
-        d["p_calibrated"] = p_cal
-        st.dataframe(d.head(20), use_container_width=True)
-        st.download_button(T["download"], d.to_csv(index=False).encode(), "predictions.csv", "text/csv")
-    st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown(f'<div class="warn">{T["warn2"]}</div>', unsafe_allow_html=True)
+        df = pd.read_csv(up)
+    if not sources:
+        st.info("No bundled patient examples: MIMIC-IV / eICU-CRD rows cannot be redistributed under the PhysioNet "
+                "data use agreement. Credentialed users can create local examples with tools/make_local_examples.py.")
+else:
+    df = pd.read_csv(sources[choice])
+
+if df is not None:
+    miss = riskcalc.check_columns(df, feats)
+    if miss:
+        st.error(f"{len(miss)} of {len(feats)} required feature columns are missing (first: {', '.join(miss[:8])}).")
+        st.stop()
+    res = riskcalc.score(df, models)
+    if "stay_id" not in res:
+        res["stay_id"] = "uploaded"
+    stays = list(pd.unique(res["stay_id"]))
+    sid = st.selectbox("Stay", stays)
+    r = res[res["stay_id"] == sid]
+    if "t_hr" in r:
+        r = r.sort_values("t_hr")
+    x = r["t_hr"] if "t_hr" in r else list(range(len(r)))
+    c1, c2 = st.columns(2)
+    for col, tier, ref, lab in ((c1, "tier1", TIER1_REF, "Tier 1 (any AKI)"), (c2, "tier2", TIER2_REF, "Tier 2 (severe AKI)")):
+        fig, ax = plt.subplots(figsize=(5, 3))
+        ax.plot(x, r[f"{tier}_p_rec"], marker="o", color="#0F6E8C")
+        ax.axhline(ref, ls="--", color="#C62828", lw=1, label=f"reference {ref}")
+        ax.set_xlabel("Hours since ICU admission (checkpoint)")
+        ax.set_ylabel("Recalibrated probability")
+        ax.set_title(lab)
+        ax.set_ylim(0, max(0.3, float(r[f"{tier}_p_rec"].max()) * 1.1))
+        ax.legend(frameon=False)
+        col.pyplot(fig)
+        plt.close(fig)
+    show = r.rename(columns={"tier1_p_rec": "Tier-1 p_rec", "tier2_p_rec": "Tier-2 p_rec",
+                             "tier1_p_raw": "Tier-1 p_raw", "tier2_p_raw": "Tier-2 p_raw"})
+    show["Tier-1 ≥ ref"] = show["Tier-1 p_rec"] >= TIER1_REF
+    show["Tier-2 ≥ ref"] = show["Tier-2 p_rec"] >= TIER2_REF
+    st.dataframe(show, use_container_width=True, hide_index=True)
+    st.download_button("Download scored checkpoints", res.to_csv(index=False).encode(), "scored_checkpoints.csv", "text/csv")
