@@ -1,0 +1,6 @@
+{
+ "a": 0.005066537324736419,
+ "b": 0.2684672844119455,
+ "transform": "p_calibrated = sigmoid(a + b * logit(p_raw))",
+ "note": "fitted on patient-grouped out-of-fold predictions of the JinhuaNSICU training split"
+}

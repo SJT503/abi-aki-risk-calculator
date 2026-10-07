@@ -1,0 +1,1662 @@
+[
+ {
+  "feature": "cr_ratio_base",
+  "label": "Creatinine ratio (current / baseline)",
+  "widget": "slider",
+  "min": 0.612,
+  "max": 1.418,
+  "default": 1.0,
+  "step": 0.008,
+  "missing_share": 0.146
+ },
+ {
+  "feature": "cr_last48",
+  "label": "Creatinine, highest in 48 h",
+  "widget": "slider",
+  "min": 0.396,
+  "max": 1.934,
+  "default": 0.769,
+  "step": 0.015,
+  "missing_share": 0.039
+ },
+ {
+  "feature": "age",
+  "label": "Age",
+  "widget": "slider",
+  "min": 27.0,
+  "max": 87.0,
+  "default": 64.0,
+  "step": 0.6,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "sbp_locf",
+  "label": "Systolic blood pressure, last available",
+  "widget": "slider",
+  "min": 86.0,
+  "max": 181.0,
+  "default": 129.0,
+  "step": 0.95,
+  "missing_share": 0.366
+ },
+ {
+  "feature": "na_locf",
+  "label": "Sodium, last available",
+  "widget": "slider",
+  "min": 131.0,
+  "max": 163.6,
+  "default": 141.9,
+  "step": 0.326,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "cl_max",
+  "label": "Chloride, maximum",
+  "widget": "slider",
+  "min": 97.5,
+  "max": 133.0,
+  "default": 109.8,
+  "step": 0.355,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "cl_last",
+  "label": "Chloride, most recent",
+  "widget": "slider",
+  "min": 96.9,
+  "max": 131.5,
+  "default": 109.0,
+  "step": 0.346,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "phos_locf_age",
+  "label": "Phosphate, time since last measurement",
+  "widget": "slider",
+  "min": 4.667,
+  "max": 438.769,
+  "default": 58.65,
+  "step": 4.341,
+  "missing_share": 0.553
+ },
+ {
+  "feature": "base_excess_min",
+  "label": "Base excess, minimum",
+  "widget": "slider",
+  "min": -8.9,
+  "max": 7.4,
+  "default": 0.3,
+  "step": 0.163,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "phos_locf",
+  "label": "Phosphate, last available",
+  "widget": "slider",
+  "min": 0.836,
+  "max": 5.079,
+  "default": 2.787,
+  "step": 0.042,
+  "missing_share": 0.553
+ },
+ {
+  "feature": "spo2_locf_age",
+  "label": "SpO\u2082, time since last measurement",
+  "widget": "slider",
+  "min": 2.25,
+  "max": 176.033,
+  "default": 69.45,
+  "step": 1.738,
+  "missing_share": 0.258
+ },
+ {
+  "feature": "wbc_locf",
+  "label": "White cell count, last available",
+  "widget": "slider",
+  "min": 4.3,
+  "max": 23.137,
+  "default": 10.6,
+  "step": 0.188,
+  "missing_share": 0.284
+ },
+ {
+  "feature": "cr_sd48",
+  "label": "Creatinine SD over 48 h",
+  "widget": "slider",
+  "min": 0.002,
+  "max": 0.234,
+  "default": 0.064,
+  "step": 0.002,
+  "missing_share": 0.188
+ },
+ {
+  "feature": "mg_locf",
+  "label": "Magnesium, last available",
+  "widget": "slider",
+  "min": 0.62,
+  "max": 1.25,
+  "default": 0.88,
+  "step": 0.006,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "na_last",
+  "label": "Sodium, most recent",
+  "widget": "slider",
+  "min": 131.0,
+  "max": 164.7,
+  "default": 142.0,
+  "step": 0.337,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "cr_base",
+  "label": "Baseline creatinine",
+  "widget": "slider",
+  "min": 0.419,
+  "max": 2.138,
+  "default": 0.769,
+  "step": 0.017,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "cr_delta_since_adm",
+  "label": "Creatinine change since admission",
+  "widget": "slider",
+  "min": -0.43,
+  "max": 0.283,
+  "default": 0.0,
+  "step": 0.007,
+  "missing_share": 0.146
+ },
+ {
+  "feature": "hr_rate_min",
+  "label": "Heart rate, minimum",
+  "widget": "slider",
+  "min": 50.0,
+  "max": 103.0,
+  "default": 69.0,
+  "step": 0.53,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "bun_last",
+  "label": "Urea nitrogen, most recent",
+  "widget": "slider",
+  "min": 7.059,
+  "max": 54.227,
+  "default": 16.582,
+  "step": 0.472,
+  "missing_share": 0.195
+ },
+ {
+  "feature": "cr_slope48",
+  "label": "Creatinine slope over 48 h",
+  "widget": "slider",
+  "min": -0.018,
+  "max": 0.022,
+  "default": 0.0,
+  "step": 0.001,
+  "missing_share": 0.039
+ },
+ {
+  "feature": "hr_rate_last",
+  "label": "Heart rate, most recent",
+  "widget": "slider",
+  "min": 55.0,
+  "max": 120.0,
+  "default": 80.0,
+  "step": 0.65,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "inr_locf",
+  "label": "INR, last available",
+  "widget": "slider",
+  "min": 0.95,
+  "max": 1.597,
+  "default": 1.14,
+  "step": 0.006,
+  "missing_share": 0.348
+ },
+ {
+  "feature": "na_max",
+  "label": "Sodium, maximum",
+  "widget": "slider",
+  "min": 131.5,
+  "max": 165.1,
+  "default": 142.5,
+  "step": 0.336,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "base_excess_max",
+  "label": "Base excess, maximum",
+  "widget": "slider",
+  "min": -5.8,
+  "max": 8.4,
+  "default": 1.5,
+  "step": 0.142,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "rdw_locf",
+  "label": "RDW, last available",
+  "widget": "slider",
+  "min": 11.7,
+  "max": 18.7,
+  "default": 13.4,
+  "step": 0.07,
+  "missing_share": 0.284
+ },
+ {
+  "feature": "charlson",
+  "label": "Charlson comorbidity index",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 5.0,
+  "default": 1.0,
+  "step": 0.05,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "rr_max",
+  "label": "Respiratory rate, maximum",
+  "widget": "slider",
+  "min": 13.0,
+  "max": 32.0,
+  "default": 20.0,
+  "step": 0.19,
+  "missing_share": 0.268
+ },
+ {
+  "feature": "hr_rate_sd48",
+  "label": "hr_rate_sd48",
+  "widget": "slider",
+  "min": 3.596,
+  "max": 23.435,
+  "default": 9.482,
+  "step": 0.198,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "glu_locf",
+  "label": "Glucose, last available",
+  "widget": "slider",
+  "min": 76.585,
+  "max": 284.59,
+  "default": 138.754,
+  "step": 2.08,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "cr_last",
+  "label": "Creatinine, most recent",
+  "widget": "slider",
+  "min": 0.394,
+  "max": 1.883,
+  "default": 0.769,
+  "step": 0.015,
+  "missing_share": 0.146
+ },
+ {
+  "feature": "bun_sd48",
+  "label": "bun_sd48",
+  "widget": "slider",
+  "min": 0.059,
+  "max": 8.834,
+  "default": 1.783,
+  "step": 0.088,
+  "missing_share": 0.25
+ },
+ {
+  "feature": "lactate_min",
+  "label": "Lactate, minimum",
+  "widget": "slider",
+  "min": 0.6,
+  "max": 3.6,
+  "default": 1.3,
+  "step": 0.03,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "hb_max",
+  "label": "Haemoglobin, maximum",
+  "widget": "slider",
+  "min": 7.5,
+  "max": 15.1,
+  "default": 10.6,
+  "step": 0.076,
+  "missing_share": 0.048
+ },
+ {
+  "feature": "wbc_last",
+  "label": "White cell count, most recent",
+  "widget": "slider",
+  "min": 4.46,
+  "max": 23.0,
+  "default": 10.6,
+  "step": 0.185,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "bun_locf",
+  "label": "Urea nitrogen, last available",
+  "widget": "slider",
+  "min": 7.031,
+  "max": 54.872,
+  "default": 16.358,
+  "step": 0.478,
+  "missing_share": 0.002
+ },
+ {
+  "feature": "cr_delta48",
+  "label": "Creatinine change over 48 h",
+  "widget": "slider",
+  "min": -0.328,
+  "max": 0.26,
+  "default": 0.0,
+  "step": 0.006,
+  "missing_share": 0.039
+ },
+ {
+  "feature": "bun_delta48",
+  "label": "Urea nitrogen, change over 48 h",
+  "widget": "slider",
+  "min": -8.558,
+  "max": 10.868,
+  "default": 0.0,
+  "step": 0.194,
+  "missing_share": 0.079
+ },
+ {
+  "feature": "po2_min",
+  "label": "PaO\u2082, minimum",
+  "widget": "slider",
+  "min": 52.0,
+  "max": 171.12,
+  "default": 97.1,
+  "step": 1.191,
+  "missing_share": 0.075
+ },
+ {
+  "feature": "cl_min",
+  "label": "Chloride, minimum",
+  "widget": "slider",
+  "min": 96.1,
+  "max": 129.9,
+  "default": 108.5,
+  "step": 0.338,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "hr_rate_max",
+  "label": "Heart rate, maximum",
+  "widget": "slider",
+  "min": 65.0,
+  "max": 135.0,
+  "default": 94.0,
+  "step": 0.7,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "cl_locf",
+  "label": "Chloride, last available",
+  "widget": "slider",
+  "min": 96.9,
+  "max": 131.0,
+  "default": 109.0,
+  "step": 0.341,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "hr_rate_slope48",
+  "label": "Heart rate, slope over 48 h",
+  "widget": "slider",
+  "min": -0.985,
+  "max": 1.126,
+  "default": 0.014,
+  "step": 0.021,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "rr_cv",
+  "label": "Respiratory rate, CV",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 0.339,
+  "default": 0.135,
+  "step": 0.003,
+  "missing_share": 0.272
+ },
+ {
+  "feature": "bun_slope48",
+  "label": "Urea nitrogen, slope over 48 h",
+  "widget": "slider",
+  "min": -0.398,
+  "max": 0.568,
+  "default": 0.0,
+  "step": 0.01,
+  "missing_share": 0.079
+ },
+ {
+  "feature": "rdw_last",
+  "label": "RDW, most recent",
+  "widget": "slider",
+  "min": 11.7,
+  "max": 18.9,
+  "default": 13.5,
+  "step": 0.072,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "glu_last",
+  "label": "Glucose, most recent",
+  "widget": "slider",
+  "min": 79.749,
+  "max": 283.455,
+  "default": 138.754,
+  "step": 2.037,
+  "missing_share": 0.198
+ },
+ {
+  "feature": "sbp_locf_age",
+  "label": "Systolic blood pressure, time since last measurement",
+  "widget": "slider",
+  "min": 3.033,
+  "max": 188.581,
+  "default": 66.467,
+  "step": 1.855,
+  "missing_share": 0.366
+ },
+ {
+  "feature": "inr_last",
+  "label": "INR, most recent",
+  "widget": "slider",
+  "min": 0.95,
+  "max": 1.603,
+  "default": 1.14,
+  "step": 0.007,
+  "missing_share": 0.407
+ },
+ {
+  "feature": "hb_min",
+  "label": "Haemoglobin, minimum",
+  "widget": "slider",
+  "min": 6.6,
+  "max": 14.066,
+  "default": 10.0,
+  "step": 0.075,
+  "missing_share": 0.048
+ },
+ {
+  "feature": "rr_min",
+  "label": "Respiratory rate, minimum",
+  "widget": "slider",
+  "min": 10.0,
+  "max": 21.0,
+  "default": 14.0,
+  "step": 0.11,
+  "missing_share": 0.268
+ },
+ {
+  "feature": "cr_locf",
+  "label": "Creatinine, last available",
+  "widget": "slider",
+  "min": 0.4,
+  "max": 1.952,
+  "default": 0.769,
+  "step": 0.016,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "hct_max",
+  "label": "Haematocrit, maximum",
+  "widget": "slider",
+  "min": 23.1,
+  "max": 46.0,
+  "default": 32.7,
+  "step": 0.229,
+  "missing_share": 0.047
+ },
+ {
+  "feature": "k_min",
+  "label": "Potassium, minimum",
+  "widget": "slider",
+  "min": 2.8,
+  "max": 4.65,
+  "default": 3.6,
+  "step": 0.019,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "ag_min",
+  "label": "Anion gap, minimum",
+  "widget": "slider",
+  "min": -8.6,
+  "max": 12.0,
+  "default": 3.5,
+  "step": 0.206,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "norepi_n24",
+  "label": "Norepinephrine administrations in 24 h",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 2.0,
+  "default": 0.0,
+  "step": 0.02,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "k_sd",
+  "label": "Potassium, SD",
+  "widget": "slider",
+  "min": 0.007,
+  "max": 0.778,
+  "default": 0.184,
+  "step": 0.008,
+  "missing_share": 0.74
+ },
+ {
+  "feature": "spo2_locf",
+  "label": "SpO\u2082, last available",
+  "widget": "slider",
+  "min": 94.0,
+  "max": 100.0,
+  "default": 99.0,
+  "step": 0.06,
+  "missing_share": 0.258
+ },
+ {
+  "feature": "lactate_max",
+  "label": "Lactate, maximum",
+  "widget": "slider",
+  "min": 0.7,
+  "max": 5.374,
+  "default": 1.6,
+  "step": 0.047,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "na_min",
+  "label": "Sodium, minimum",
+  "widget": "slider",
+  "min": 129.6,
+  "max": 162.4,
+  "default": 141.2,
+  "step": 0.328,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "hct_last",
+  "label": "Haematocrit, most recent",
+  "widget": "slider",
+  "min": 21.648,
+  "max": 43.8,
+  "default": 31.4,
+  "step": 0.222,
+  "missing_share": 0.047
+ },
+ {
+  "feature": "hco3_max",
+  "label": "Bicarbonate, maximum",
+  "widget": "slider",
+  "min": 18.0,
+  "max": 32.5,
+  "default": 25.0,
+  "step": 0.145,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "lactate_locf",
+  "label": "Lactate, last available",
+  "widget": "slider",
+  "min": 0.6,
+  "max": 4.3,
+  "default": 1.5,
+  "step": 0.037,
+  "missing_share": 0.023
+ },
+ {
+  "feature": "k_last",
+  "label": "Potassium, most recent",
+  "widget": "slider",
+  "min": 2.89,
+  "max": 4.719,
+  "default": 3.66,
+  "step": 0.018,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "glu_min",
+  "label": "Glucose, minimum",
+  "widget": "slider",
+  "min": 78.928,
+  "max": 273.443,
+  "default": 137.673,
+  "step": 1.945,
+  "missing_share": 0.198
+ },
+ {
+  "feature": "k_locf",
+  "label": "Potassium, last available",
+  "widget": "slider",
+  "min": 2.88,
+  "max": 4.73,
+  "default": 3.66,
+  "step": 0.019,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "base_excess_last",
+  "label": "Base excess, most recent",
+  "widget": "slider",
+  "min": -6.7,
+  "max": 8.0,
+  "default": 1.0,
+  "step": 0.147,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "mg_last",
+  "label": "Magnesium, most recent",
+  "widget": "slider",
+  "min": 0.63,
+  "max": 1.21,
+  "default": 0.89,
+  "step": 0.006,
+  "missing_share": 0.226
+ },
+ {
+  "feature": "spo2_last",
+  "label": "SpO\u2082, most recent",
+  "widget": "slider",
+  "min": 95.0,
+  "max": 100.0,
+  "default": 98.0,
+  "step": 0.05,
+  "missing_share": 0.873
+ },
+ {
+  "feature": "po2_locf",
+  "label": "PaO\u2082, last available",
+  "widget": "slider",
+  "min": 57.8,
+  "max": 190.0,
+  "default": 104.0,
+  "step": 1.322,
+  "missing_share": 0.023
+ },
+ {
+  "feature": "ag_locf",
+  "label": "Anion gap, last available",
+  "widget": "slider",
+  "min": -7.6,
+  "max": 14.0,
+  "default": 4.4,
+  "step": 0.216,
+  "missing_share": 0.047
+ },
+ {
+  "feature": "cr_min",
+  "label": "Creatinine, minimum",
+  "widget": "slider",
+  "min": 0.393,
+  "max": 1.883,
+  "default": 0.758,
+  "step": 0.015,
+  "missing_share": 0.146
+ },
+ {
+  "feature": "wbc_min",
+  "label": "White cell count, minimum",
+  "widget": "slider",
+  "min": 4.4,
+  "max": 22.496,
+  "default": 10.46,
+  "step": 0.181,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "hr_rate_cv",
+  "label": "Heart rate, CV",
+  "widget": "slider",
+  "min": 0.031,
+  "max": 0.262,
+  "default": 0.099,
+  "step": 0.002,
+  "missing_share": 0.154
+ },
+ {
+  "feature": "hco3_last",
+  "label": "Bicarbonate, most recent",
+  "widget": "slider",
+  "min": 17.1,
+  "max": 32.0,
+  "default": 24.6,
+  "step": 0.149,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "mg_max",
+  "label": "Magnesium, maximum",
+  "widget": "slider",
+  "min": 0.64,
+  "max": 1.21,
+  "default": 0.89,
+  "step": 0.006,
+  "missing_share": 0.226
+ },
+ {
+  "feature": "rr_sd",
+  "label": "Respiratory rate, SD",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 6.242,
+  "default": 2.251,
+  "step": 0.062,
+  "missing_share": 0.272
+ },
+ {
+  "feature": "ag_max",
+  "label": "Anion gap, maximum",
+  "widget": "slider",
+  "min": -6.1,
+  "max": 15.814,
+  "default": 5.4,
+  "step": 0.219,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "po2_last",
+  "label": "PaO\u2082, most recent",
+  "widget": "slider",
+  "min": 57.488,
+  "max": 184.0,
+  "default": 105.0,
+  "step": 1.265,
+  "missing_share": 0.075
+ },
+ {
+  "feature": "hb_last",
+  "label": "Haemoglobin, most recent",
+  "widget": "slider",
+  "min": 7.0,
+  "max": 14.4,
+  "default": 10.2,
+  "step": 0.074,
+  "missing_share": 0.048
+ },
+ {
+  "feature": "inr_h_last",
+  "label": "inr_h, most recent",
+  "widget": "slider",
+  "min": 0.533,
+  "max": 23.35,
+  "default": 12.45,
+  "step": 0.228,
+  "missing_share": 0.407
+ },
+ {
+  "feature": "inr_locf_age",
+  "label": "INR, time since last measurement",
+  "widget": "slider",
+  "min": 0.572,
+  "max": 46.333,
+  "default": 13.65,
+  "step": 0.458,
+  "missing_share": 0.348
+ },
+ {
+  "feature": "hct_min",
+  "label": "Haematocrit, minimum",
+  "widget": "slider",
+  "min": 19.748,
+  "max": 42.6,
+  "default": 30.5,
+  "step": 0.229,
+  "missing_share": 0.047
+ },
+ {
+  "feature": "bun_last48",
+  "label": "Urea nitrogen, highest in 48 h",
+  "widget": "slider",
+  "min": 7.059,
+  "max": 54.9,
+  "default": 16.414,
+  "step": 0.478,
+  "missing_share": 0.079
+ },
+ {
+  "feature": "sbp_last48",
+  "label": "Systolic blood pressure, highest in 48 h",
+  "widget": "slider",
+  "min": 93.0,
+  "max": 181.0,
+  "default": 130.0,
+  "step": 0.88,
+  "missing_share": 0.791
+ },
+ {
+  "feature": "hb_cv",
+  "label": "Haemoglobin, CV",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 0.213,
+  "default": 0.037,
+  "step": 0.002,
+  "missing_share": 0.21
+ },
+ {
+  "feature": "po2_max",
+  "label": "PaO\u2082, maximum",
+  "widget": "slider",
+  "min": 63.8,
+  "max": 208.0,
+  "default": 114.0,
+  "step": 1.442,
+  "missing_share": 0.075
+ },
+ {
+  "feature": "k_max",
+  "label": "Potassium, maximum",
+  "widget": "slider",
+  "min": 2.93,
+  "max": 4.9,
+  "default": 3.71,
+  "step": 0.02,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "hr_rate_slope",
+  "label": "Heart rate, trend",
+  "widget": "slider",
+  "min": -1.664,
+  "max": 1.814,
+  "default": 0.007,
+  "step": 0.035,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "rr_slope",
+  "label": "Respiratory rate, trend",
+  "widget": "slider",
+  "min": -0.443,
+  "max": 0.493,
+  "default": 0.0,
+  "step": 0.009,
+  "missing_share": 0.268
+ },
+ {
+  "feature": "hr_rate_delta48",
+  "label": "Heart rate, change over 48 h",
+  "widget": "slider",
+  "min": -42.0,
+  "max": 42.0,
+  "default": 0.0,
+  "step": 0.84,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "hr_rate_sd",
+  "label": "Heart rate, SD",
+  "widget": "slider",
+  "min": 2.422,
+  "max": 22.396,
+  "default": 7.918,
+  "step": 0.2,
+  "missing_share": 0.154
+ },
+ {
+  "feature": "inr_min",
+  "label": "INR, minimum",
+  "widget": "slider",
+  "min": 0.95,
+  "max": 1.6,
+  "default": 1.14,
+  "step": 0.007,
+  "missing_share": 0.407
+ },
+ {
+  "feature": "phos_last",
+  "label": "Phosphate, most recent",
+  "widget": "slider",
+  "min": 0.65,
+  "max": 5.173,
+  "default": 2.787,
+  "step": 0.045,
+  "missing_share": 0.902
+ },
+ {
+  "feature": "rdw_h_last",
+  "label": "rdw_h, most recent",
+  "widget": "slider",
+  "min": 0.533,
+  "max": 23.25,
+  "default": 12.35,
+  "step": 0.227,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "ag_last",
+  "label": "Anion gap, most recent",
+  "widget": "slider",
+  "min": -7.6,
+  "max": 14.0,
+  "default": 4.4,
+  "step": 0.216,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "hco3_min",
+  "label": "Bicarbonate, minimum",
+  "widget": "slider",
+  "min": 15.5,
+  "max": 31.6,
+  "default": 23.9,
+  "step": 0.161,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "hct_cv",
+  "label": "Haematocrit, CV",
+  "widget": "slider",
+  "min": 0.002,
+  "max": 0.23,
+  "default": 0.04,
+  "step": 0.002,
+  "missing_share": 0.209
+ },
+ {
+  "feature": "base_excess_sd",
+  "label": "Base excess, SD",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 3.886,
+  "default": 0.778,
+  "step": 0.039,
+  "missing_share": 0.267
+ },
+ {
+  "feature": "hb_sd",
+  "label": "Haemoglobin, SD",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 2.121,
+  "default": 0.361,
+  "step": 0.021,
+  "missing_share": 0.21
+ },
+ {
+  "feature": "lactate_last",
+  "label": "Lactate, most recent",
+  "widget": "slider",
+  "min": 0.6,
+  "max": 4.3,
+  "default": 1.46,
+  "step": 0.037,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "mg_min",
+  "label": "Magnesium, minimum",
+  "widget": "slider",
+  "min": 0.63,
+  "max": 1.2,
+  "default": 0.89,
+  "step": 0.006,
+  "missing_share": 0.226
+ },
+ {
+  "feature": "ag_sd",
+  "label": "Anion gap, SD",
+  "widget": "slider",
+  "min": 0.071,
+  "max": 8.627,
+  "default": 1.414,
+  "step": 0.086,
+  "missing_share": 0.384
+ },
+ {
+  "feature": "cl_h_last",
+  "label": "cl_h, most recent",
+  "widget": "slider",
+  "min": 0.433,
+  "max": 23.183,
+  "default": 11.0,
+  "step": 0.227,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "lactate_cv",
+  "label": "Lactate, CV",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 0.707,
+  "default": 0.202,
+  "step": 0.007,
+  "missing_share": 0.38
+ },
+ {
+  "feature": "mg_locf_age",
+  "label": "mg_locf_age",
+  "widget": "slider",
+  "min": 0.683,
+  "max": 85.369,
+  "default": 15.833,
+  "step": 0.847,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "rdw_min",
+  "label": "RDW, minimum",
+  "widget": "slider",
+  "min": 11.7,
+  "max": 18.9,
+  "default": 13.4,
+  "step": 0.072,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "inr_max",
+  "label": "INR, maximum",
+  "widget": "slider",
+  "min": 0.96,
+  "max": 1.61,
+  "default": 1.15,
+  "step": 0.007,
+  "missing_share": 0.407
+ },
+ {
+  "feature": "ag_cv",
+  "label": "Anion gap, CV",
+  "widget": "slider",
+  "min": 0.011,
+  "max": 7.836,
+  "default": 0.307,
+  "step": 0.078,
+  "missing_share": 0.384
+ },
+ {
+  "feature": "base_excess_locf",
+  "label": "Base excess, last available",
+  "widget": "slider",
+  "min": -7.2,
+  "max": 8.0,
+  "default": 1.0,
+  "step": 0.152,
+  "missing_share": 0.023
+ },
+ {
+  "feature": "rr_h_last",
+  "label": "rr_h, most recent",
+  "widget": "slider",
+  "min": 0.067,
+  "max": 3.9,
+  "default": 2.017,
+  "step": 0.038,
+  "missing_share": 0.268
+ },
+ {
+  "feature": "mg_h_last",
+  "label": "mg_h, most recent",
+  "widget": "slider",
+  "min": 0.55,
+  "max": 23.233,
+  "default": 12.517,
+  "step": 0.227,
+  "missing_share": 0.226
+ },
+ {
+  "feature": "bun_h_last",
+  "label": "bun_h, most recent",
+  "widget": "slider",
+  "min": 0.583,
+  "max": 23.283,
+  "default": 12.533,
+  "step": 0.227,
+  "missing_share": 0.195
+ },
+ {
+  "feature": "lactate_sd",
+  "label": "Lactate, SD",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 1.98,
+  "default": 0.299,
+  "step": 0.02,
+  "missing_share": 0.38
+ },
+ {
+  "feature": "bun_max",
+  "label": "Urea nitrogen, maximum",
+  "widget": "slider",
+  "min": 7.115,
+  "max": 54.64,
+  "default": 16.638,
+  "step": 0.475,
+  "missing_share": 0.195
+ },
+ {
+  "feature": "hb_slope",
+  "label": "Haemoglobin, trend",
+  "widget": "slider",
+  "min": -0.652,
+  "max": 0.616,
+  "default": 0.0,
+  "step": 0.013,
+  "missing_share": 0.048
+ },
+ {
+  "feature": "po2_sd",
+  "label": "PaO\u2082, SD",
+  "widget": "slider",
+  "min": 0.566,
+  "max": 68.198,
+  "default": 11.503,
+  "step": 0.676,
+  "missing_share": 0.384
+ },
+ {
+  "feature": "glu_max",
+  "label": "Glucose, maximum",
+  "widget": "slider",
+  "min": 81.811,
+  "max": 291.564,
+  "default": 140.736,
+  "step": 2.098,
+  "missing_share": 0.198
+ },
+ {
+  "feature": "bun_locf_age",
+  "label": "Urea nitrogen, time since last measurement",
+  "widget": "slider",
+  "min": 0.7,
+  "max": 98.39,
+  "default": 15.067,
+  "step": 0.977,
+  "missing_share": 0.002
+ },
+ {
+  "feature": "base_excess_cv",
+  "label": "Base excess, CV",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 8.485,
+  "default": 0.35,
+  "step": 0.085,
+  "missing_share": 0.271
+ },
+ {
+  "feature": "cl_locf_age",
+  "label": "cl_locf_age",
+  "widget": "slider",
+  "min": 0.483,
+  "max": 81.119,
+  "default": 12.717,
+  "step": 0.806,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "rr_last",
+  "label": "Respiratory rate, most recent",
+  "widget": "slider",
+  "min": 11.0,
+  "max": 28.0,
+  "default": 16.0,
+  "step": 0.17,
+  "missing_share": 0.268
+ },
+ {
+  "feature": "bun_min",
+  "label": "Urea nitrogen, minimum",
+  "widget": "slider",
+  "min": 6.946,
+  "max": 54.059,
+  "default": 16.414,
+  "step": 0.471,
+  "missing_share": 0.195
+ },
+ {
+  "feature": "hr_rate_delta",
+  "label": "Heart rate, change",
+  "widget": "slider",
+  "min": -35.0,
+  "max": 37.0,
+  "default": 0.0,
+  "step": 0.72,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "hct_delta",
+  "label": "Haematocrit, change",
+  "widget": "slider",
+  "min": -7.852,
+  "max": 5.9,
+  "default": 0.0,
+  "step": 0.138,
+  "missing_share": 0.047
+ },
+ {
+  "feature": "na_delta",
+  "label": "Sodium, change",
+  "widget": "slider",
+  "min": -4.5,
+  "max": 8.6,
+  "default": 0.0,
+  "step": 0.131,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "hco3_locf",
+  "label": "Bicarbonate, last available",
+  "widget": "slider",
+  "min": 16.8,
+  "max": 32.1,
+  "default": 24.6,
+  "step": 0.153,
+  "missing_share": 0.023
+ },
+ {
+  "feature": "inr_slope",
+  "label": "INR, trend",
+  "widget": "slider",
+  "min": -0.011,
+  "max": 0.016,
+  "default": 0.0,
+  "step": 0.001,
+  "missing_share": 0.407
+ },
+ {
+  "feature": "po2_cv",
+  "label": "PaO\u2082, CV",
+  "widget": "slider",
+  "min": 0.005,
+  "max": 0.582,
+  "default": 0.11,
+  "step": 0.006,
+  "missing_share": 0.384
+ },
+ {
+  "feature": "na_slope",
+  "label": "Sodium, trend",
+  "widget": "slider",
+  "min": -0.667,
+  "max": 4.02,
+  "default": 0.0,
+  "step": 0.047,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "ag_n",
+  "label": "Anion gap, measurement count",
+  "widget": "slider",
+  "min": 1.0,
+  "max": 4.0,
+  "default": 2.0,
+  "step": 0.03,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "hb_delta",
+  "label": "Haemoglobin, change",
+  "widget": "slider",
+  "min": -2.5,
+  "max": 1.9,
+  "default": 0.0,
+  "step": 0.044,
+  "missing_share": 0.048
+ },
+ {
+  "feature": "rdw_locf_age",
+  "label": "RDW, time since last measurement",
+  "widget": "slider",
+  "min": 0.682,
+  "max": 67.119,
+  "default": 14.617,
+  "step": 0.664,
+  "missing_share": 0.284
+ },
+ {
+  "feature": "ag_delta",
+  "label": "Anion gap, change",
+  "widget": "slider",
+  "min": -8.3,
+  "max": 7.714,
+  "default": 0.0,
+  "step": 0.16,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "po2_delta",
+  "label": "PaO\u2082, change",
+  "widget": "slider",
+  "min": -74.048,
+  "max": 58.4,
+  "default": 0.0,
+  "step": 1.324,
+  "missing_share": 0.075
+ },
+ {
+  "feature": "hr_rate_h_last",
+  "label": "hr_rate_h, most recent",
+  "widget": "slider",
+  "min": 0.067,
+  "max": 3.917,
+  "default": 2.017,
+  "step": 0.038,
+  "missing_share": 0.148
+ },
+ {
+  "feature": "hct_slope",
+  "label": "Haematocrit, trend",
+  "widget": "slider",
+  "min": -2.4,
+  "max": 2.136,
+  "default": 0.0,
+  "step": 0.045,
+  "missing_share": 0.047
+ },
+ {
+  "feature": "cr_max",
+  "label": "Creatinine, maximum",
+  "widget": "slider",
+  "min": 0.394,
+  "max": 1.888,
+  "default": 0.769,
+  "step": 0.015,
+  "missing_share": 0.146
+ },
+ {
+  "feature": "po2_slope",
+  "label": "PaO\u2082, trend",
+  "widget": "slider",
+  "min": -6.543,
+  "max": 5.528,
+  "default": 0.0,
+  "step": 0.121,
+  "missing_share": 0.075
+ },
+ {
+  "feature": "na_sd",
+  "label": "Sodium, SD",
+  "widget": "slider",
+  "min": 0.121,
+  "max": 8.342,
+  "default": 2.333,
+  "step": 0.082,
+  "missing_share": 0.74
+ },
+ {
+  "feature": "hco3_sd",
+  "label": "Bicarbonate, SD",
+  "widget": "slider",
+  "min": 0.071,
+  "max": 3.891,
+  "default": 0.99,
+  "step": 0.038,
+  "missing_share": 0.38
+ },
+ {
+  "feature": "base_excess_delta",
+  "label": "Base excess, change",
+  "widget": "slider",
+  "min": -3.7,
+  "max": 5.1,
+  "default": 0.0,
+  "step": 0.088,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "lactate_slope",
+  "label": "Lactate, trend",
+  "widget": "slider",
+  "min": -0.194,
+  "max": 0.153,
+  "default": 0.0,
+  "step": 0.003,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "cl_delta",
+  "label": "Chloride, change",
+  "widget": "slider",
+  "min": -7.7,
+  "max": 6.0,
+  "default": 0.0,
+  "step": 0.137,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "hb_locf",
+  "label": "Haemoglobin, last available",
+  "widget": "slider",
+  "min": 7.0,
+  "max": 14.4,
+  "default": 10.3,
+  "step": 0.074,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "hct_sd",
+  "label": "Haematocrit, SD",
+  "widget": "slider",
+  "min": 0.071,
+  "max": 7.184,
+  "default": 1.253,
+  "step": 0.071,
+  "missing_share": 0.209
+ },
+ {
+  "feature": "hb_h_last",
+  "label": "hb_h, most recent",
+  "widget": "slider",
+  "min": 0.206,
+  "max": 22.194,
+  "default": 6.983,
+  "step": 0.22,
+  "missing_share": 0.048
+ },
+ {
+  "feature": "bun_slope",
+  "label": "Urea nitrogen, trend",
+  "widget": "slider",
+  "min": -0.242,
+  "max": 0.391,
+  "default": 0.0,
+  "step": 0.006,
+  "missing_share": 0.195
+ },
+ {
+  "feature": "hco3_cv",
+  "label": "Bicarbonate, CV",
+  "widget": "slider",
+  "min": 0.002,
+  "max": 0.192,
+  "default": 0.041,
+  "step": 0.002,
+  "missing_share": 0.38
+ },
+ {
+  "feature": "lactate_delta",
+  "label": "Lactate, change",
+  "widget": "slider",
+  "min": -2.2,
+  "max": 1.6,
+  "default": 0.0,
+  "step": 0.038,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "k_delta",
+  "label": "Potassium, change",
+  "widget": "slider",
+  "min": -0.6,
+  "max": 0.699,
+  "default": 0.0,
+  "step": 0.013,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "cl_sd",
+  "label": "Chloride, SD",
+  "widget": "slider",
+  "min": 0.071,
+  "max": 8.692,
+  "default": 2.404,
+  "step": 0.086,
+  "missing_share": 0.74
+ },
+ {
+  "feature": "cr_h_last",
+  "label": "Creatinine, hours since last measurement",
+  "widget": "slider",
+  "min": 0.567,
+  "max": 23.3,
+  "default": 12.433,
+  "step": 0.227,
+  "missing_share": 0.146
+ },
+ {
+  "feature": "rr_delta",
+  "label": "Respiratory rate, change",
+  "widget": "slider",
+  "min": -10.0,
+  "max": 11.0,
+  "default": 0.0,
+  "step": 0.21,
+  "missing_share": 0.268
+ },
+ {
+  "feature": "rdw_max",
+  "label": "RDW, maximum",
+  "widget": "slider",
+  "min": 11.7,
+  "max": 19.0,
+  "default": 13.5,
+  "step": 0.073,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "cl_slope",
+  "label": "Chloride, trend",
+  "widget": "slider",
+  "min": -3.93,
+  "max": 0.768,
+  "default": 0.0,
+  "step": 0.047,
+  "missing_share": 0.135
+ },
+ {
+  "feature": "wbc_max",
+  "label": "White cell count, maximum",
+  "widget": "slider",
+  "min": 4.6,
+  "max": 23.6,
+  "default": 10.69,
+  "step": 0.19,
+  "missing_share": 0.404
+ },
+ {
+  "feature": "glu_h_last",
+  "label": "Glucose, hours since last measurement",
+  "widget": "slider",
+  "min": 0.58,
+  "max": 23.317,
+  "default": 12.517,
+  "step": 0.227,
+  "missing_share": 0.198
+ },
+ {
+  "feature": "ag_h_last",
+  "label": "Anion gap, hours since last measurement",
+  "widget": "slider",
+  "min": 0.267,
+  "max": 22.7,
+  "default": 7.317,
+  "step": 0.224,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "dex_n24",
+  "label": "Dexmedetomidine, administrations in 24 h",
+  "widget": "slider",
+  "min": 0.0,
+  "max": 2.0,
+  "default": 0.0,
+  "step": 0.02,
+  "missing_share": 0.0
+ },
+ {
+  "feature": "ag_slope",
+  "label": "Anion gap, trend",
+  "widget": "slider",
+  "min": -0.703,
+  "max": 0.76,
+  "default": 0.0,
+  "step": 0.015,
+  "missing_share": 0.076
+ },
+ {
+  "feature": "glu_locf_age",
+  "label": "Glucose, time since last measurement",
+  "widget": "slider",
+  "min": 0.683,
+  "max": 83.737,
+  "default": 15.1,
+  "step": 0.831,
+  "missing_share": 0.005
+ },
+ {
+  "feature": "hco3_slope",
+  "label": "Bicarbonate, trend",
+  "widget": "slider",
+  "min": -0.383,
+  "max": 0.368,
+  "default": 0.0,
+  "step": 0.008,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "k_cv",
+  "label": "Potassium, CV",
+  "widget": "slider",
+  "min": 0.002,
+  "max": 0.211,
+  "default": 0.05,
+  "step": 0.002,
+  "missing_share": 0.74
+ },
+ {
+  "feature": "base_excess_slope",
+  "label": "Base excess, trend",
+  "widget": "slider",
+  "min": -0.387,
+  "max": 0.392,
+  "default": 0.0,
+  "step": 0.008,
+  "missing_share": 0.073
+ },
+ {
+  "feature": "cl_cv",
+  "label": "Chloride, CV",
+  "widget": "slider",
+  "min": 0.001,
+  "max": 0.075,
+  "default": 0.021,
+  "step": 0.001,
+  "missing_share": 0.74
+ },
+ {
+  "feature": "hr_rate_n",
+  "label": "Heart rate, measurement count",
+  "widget": "slider",
+  "min": 5.0,
+  "max": 6.0,
+  "default": 6.0,
+  "step": 0.01,
+  "missing_share": 0.148
+ }
+]
