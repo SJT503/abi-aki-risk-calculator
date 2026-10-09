@@ -20,7 +20,7 @@ import riskcalc as rc
 
 ROOT = Path(__file__).resolve().parent
 EXAMPLES = ROOT / "examples_local"
-VERSION = "v2026.10.09 · JinhuaNSICU development"
+VERSION = "v2026.10.08 · JinhuaNSICU development"
 BAND_COLOR = ["#2e7d32", "#b8860b", "#c62828"]
 
 st.set_page_config(page_title="ABI-AKI Risk Calculator", page_icon="🧠", layout="wide")
@@ -162,21 +162,9 @@ S = {
 
 SUP = str.maketrans("-0123456789", "⁻⁰¹²³⁴⁵⁶⁷⁸⁹")
 def fmt_p(p):
-    """Severe-AKI raw-score display: >=1% in the same percent style as any-AKI, <1% in scientific percent."""
-    pct = p * 100
-    if pct >= 1: return f"{pct:.1f}%"
-    m, e = f"{pct:.1e}".split("e")
-    return f"{m} × 10{str(int(e)).translate(SUP)}%"
-
-def sev_axis_ticks():
-    """Decade ticks (fraction 1e-8..1) as percent labels: >=1% integer percent like the
-    any-AKI axis, <1% scientific percent (10^-6% ... 10^-1%)."""
-    vals, txt = [], []
-    for e in range(-8, 1):
-        vals.append(10.0 ** e)
-        k = e + 2                       # fraction 10^e = 10^(e+2) percent
-        txt.append(f"{10.0 ** k:.0f}%" if k >= 0 else f"10{str(k).translate(SUP)}%")
-    return vals, txt
+    if p >= 0.001: return f"{p*100:.1f}%"
+    m, e = f"{p:.1e}".split("e")
+    return f"{m} × 10{str(int(e)).translate(SUP)}"
 
 @st.cache_resource
 def load():
@@ -316,8 +304,7 @@ if scored is not None:
         fig2 = go.Figure()
         fig2.add_trace(go.Scatter(x=x, y=r["severe_p_raw"], mode="lines+markers",
                                    line=dict(color="#5b7083", width=2.5), marker=dict(size=6),
-                                   name=T["chart_sev"], customdata=[fmt_p(v) for v in r["severe_p_raw"]],
-                                   hovertemplate="h %{x}: %{customdata}<extra></extra>"))
+                                   name=T["chart_sev"], hovertemplate="h %{x}: %{y:.2e}<extra></extra>"))
         fig2.add_hline(y=SEV_REF, line_dash="dash", line_color="#c62828", line_width=1.5,
                        annotation_text=T["sev_ref"], annotation_position="top right")
         fig2.update_layout(title=T["chart_sev"], xaxis_title=T["x_label"], yaxis_title=T["y_sev"],
@@ -325,8 +312,8 @@ if scored is not None:
                            height=320, margin=dict(l=60, r=20, t=45, b=40),
                            plot_bgcolor="white", paper_bgcolor="white",
                            font=dict(family="Source Sans Pro, Noto Sans SC, sans-serif", size=12))
-        sv_vals, sv_txt = sev_axis_ticks()
-        fig2.update_yaxes(tickvals=sv_vals, ticktext=sv_txt)
+        fig2.update_yaxes(tickvals=[1e-8, 1e-6, 1e-4, 1e-2, 1e0],
+                          ticktext=["0.000001%", "0.0001%", "0.01%", "1%", "100%"])
         fig2.update_xaxes(gridcolor="#e8edf2")
         fig2.update_yaxes(gridcolor="#e8edf2")
         st.plotly_chart(fig2, use_container_width=True, key="chart_sev_fig")
@@ -346,14 +333,13 @@ if scored is not None:
     show["band_lbl"] = [T["bands"][b] for b in show["band"]]
     show["alert"] = show["any_p_cal"] >= rc.ANY_WORKING
     show["any_p_cal"] = (show["any_p_cal"] * 100).round(1)
-    show["severe_p_raw"] = [fmt_p(v) for v in show["severe_p_raw"]]
     C = T["cols"]
     st.markdown(f"**{T['table_lbl']}**")
     st.dataframe(show[["t_hr", "any_p_cal", "band_lbl", "severe_p_raw", "alert"]],
                  hide_index=True, use_container_width=True, column_config={
         "t_hr": st.column_config.NumberColumn(C["t_hr"], format="%d"),
         "any_p_cal": st.column_config.NumberColumn(C["any_p_cal"], format="%.1f%%"),
-        "severe_p_raw": st.column_config.TextColumn(C["severe_p_raw"]),
+        "severe_p_raw": st.column_config.NumberColumn(C["severe_p_raw"], format="%.2e"),
         "alert": st.column_config.CheckboxColumn(C["alert"]),
     })
     st.download_button(T["dl_btn"], scored.to_csv(index=False).encode(),
