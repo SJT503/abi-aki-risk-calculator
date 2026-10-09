@@ -114,15 +114,20 @@ def test_screenshot_states(M):
 
 
 def test_examples_scores(M):
-    peaks = {}
+    peaks, sev_peaks = {}, {}
     for n in ("low_rise", "intermediate", "rapid_rise"):
         d = pd.read_csv(ROOT / "examples_local" / f"demo_{n}.csv")
         s, miss = rc.score_frame(d, M)
         assert miss == [] and len(s) == 24
         peaks[n] = s["any_p_cal"].max()
-    assert round(peaks["low_rise"] * 100, 1) == 1.8
-    assert round(peaks["intermediate"] * 100, 1) == 4.8
-    assert round(peaks["rapid_rise"] * 100, 1) == 30.4
+        sev_peaks[n] = float(s["severe_p_raw"].max())
+    assert round(peaks["low_rise"] * 100, 1) == 3.0 and rc.band(peaks["low_rise"]) == 0
+    assert round(peaks["intermediate"] * 100, 1) == 25.9 and rc.band(peaks["intermediate"]) == 2
+    assert round(peaks["rapid_rise"] * 100, 1) == 64.2 and rc.band(peaks["rapid_rise"]) == 2
+    # Example C must be a SUBSTANTIVE severe-AKI case: raw score >= 1e-2 (v1 was 3.8e-05)
+    # and >= 2 orders of magnitude above Example A, mirroring the real severe phenotype
+    assert sev_peaks["rapid_rise"] >= 1e-2
+    assert sev_peaks["rapid_rise"] / sev_peaks["low_rise"] >= 100
 
 
 def test_bands():
@@ -134,8 +139,9 @@ WIDGET = re.compile(r"st\.(slider|number_input|checkbox|selectbox|text_input|rad
 
 
 def test_no_uo_gcs_input_widgets():
+    # v3 upload-first UI: any widget count is fine; none may mention UO/GCS
     calls = [m.group(0) for m in WIDGET.finditer(SRC)]
-    assert len(calls) >= 14
+    assert len(calls) >= 1
     for c in calls:
         assert not re.search(r"urine|\buo\b|gcs|glasgow|尿量", c, re.I), c
     keys = [l for l in SRC.splitlines() if re.search(r'^\s+(uo|gcs|urine)\w*\s*=\s*st\.', l, re.I)]
@@ -149,8 +155,8 @@ def test_no_banned_vocabulary():
 
 def test_evidence_numbers_present():
     for s in ("0.815", "0.754–0.872", "0.769 · 0.777", "0.909 · 0.839 · 0.881", "1,033 / 7,442 / 9,071",
-              "166 of 280", "1.476", "0.05 / 0.08 / 0.10", "0.15 working", "0.20", "no urine output, no GCS",
-              "v2026.10.07 · JinhuaNSICU development"):
+              "166 of 280", "1.476", "0.15 working", "0.20", "no urine output, no GCS",
+              "v2026.10.08 · JinhuaNSICU development"):
         assert s in SRC, s
 
 
@@ -158,7 +164,7 @@ def test_app_runs_headless_en_zh():
     from streamlit.testing.v1 import AppTest
     at = AppTest.from_file(str(ROOT / "app.py"), default_timeout=120).run()
     assert not at.exception
-    assert len(at.slider) + len(at.number_input) + len(at.checkbox) == 14
+    assert len(at.radio(key="lang").options) == 2          # English / 中文 toggle present
     at.radio(key="lang").set_value("中文").run()
     assert not at.exception
 
@@ -180,6 +186,7 @@ def test_disclaimer_b1():
 
 def test_key_result_b2():
     for s in ("KEY RESULT", "关键结果", "0.922 · 0.878", "0.882–0.954 · 0.791–0.953", "87 / 83 event stays",
-              "best-discriminated endpoint", "3 event stays (underpowered)"):
+              "best-discriminated endpoint", "RRT readiness", "区分度最高的终点"):
         assert s in SRC, s
     assert "matches published" not in SRC and "exceeds" not in SRC
+    assert "underpowered" not in SRC and "检验效能不足" not in SRC   # dropped per PI 2026-10-08

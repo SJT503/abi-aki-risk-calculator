@@ -30,10 +30,13 @@ the frozen prediction files that reproduce every reported value are regenerated 
 
 ## Online calculator (Paper 2 model)
 
-calculator_p2/ contains the bedside demonstration app for the JinhuaNSICU-developed model
-(any-AKI and severe-AKI outputs, creatinine-only inputs, no GCS or urine output) and its
-exported model artifacts (retrained under the frozen protocol; internal AUROC 0.815,
-external 0.769 / 0.777 reproduced at export time).
+calculator_p2/ contains the demonstration app for the JinhuaNSICU-developed model:
+upload-first bilingual (English/中文) interface — CSV batch upload (166-feature template),
+three synthetic example trajectories (stable low risk / rising any-AKI risk / severe-AKI
+high risk), any-AKI calibrated probability and severe-AKI raw ranking score per 6-h
+checkpoint, no GCS or urine-output inputs — plus its exported model artifacts (retrained
+under the frozen protocol; internal AUROC 0.815, external 0.769 / 0.777 reproduced at
+export time).
 
 ## Databases
 
