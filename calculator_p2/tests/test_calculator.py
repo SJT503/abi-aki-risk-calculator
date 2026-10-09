@@ -156,7 +156,7 @@ def test_no_banned_vocabulary():
 def test_evidence_numbers_present():
     for s in ("0.815", "0.754–0.872", "0.769 · 0.777", "0.909 · 0.839 · 0.881", "1,033 / 7,442 / 9,071",
               "166 of 280", "1.476", "0.15 working", "0.20", "no urine output, no GCS",
-              "v2026.10.08 · JinhuaNSICU development"):
+              "v2026.10.09 · JinhuaNSICU development"):
         assert s in SRC, s
 
 
