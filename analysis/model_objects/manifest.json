@@ -1,0 +1,20 @@
+{
+  "file": "frozen_models.pkl",
+  "sha256": "63859bf4762d025bb0369c7a499cc15102ed57f26368b6003e01ef79fee40ca0",
+  "bytes": 25625548,
+  "n_features": 166,
+  "canary_aurocs": {
+    "ge1": {
+      "M4": 0.7694,
+      "eICU": 0.7773
+    },
+    "ge2": {
+      "M4": 0.7919,
+      "eICU": 0.7648
+    },
+    "ge3": {
+      "M4": 0.9222,
+      "eICU": 0.8779
+    }
+  }
+}

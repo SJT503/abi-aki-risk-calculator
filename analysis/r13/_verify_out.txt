@@ -1,0 +1,73 @@
+==============================================================================
+T1: MODEL AUROC ON ALL ROWS
+  MIMIC: n=75638 pos=3425 posrate=0.04528 stays=7442 AUROC=0.7694
+  eICU: n=84866 pos=3608 posrate=0.04251 stays=9071 AUROC=0.7773
+==============================================================================
+KEY UNIQUENESS (stay_id,t_hr)
+  pred_M: rows=75638 dup_pairs=0
+  feat_M: rows=75638 dup_pairs=0
+  pred_e: rows=84866 dup_pairs=0
+  feat_e: rows=84866 dup_pairs=0
+==============================================================================
+T2: MISSINGNESS OF cr_ratio_base AFTER LEFT MERGE
+  MIMIC: n=75638 NaN_ratio=12677 (16.76%) unmatched_rows=0 NaN_but_matched=12677
+        stay_id set diff pred\feat=0 feat\pred=0
+  eICU: n=84866 NaN_ratio=0 (0.00%) unmatched_rows=0 NaN_but_matched=0
+        stay_id set diff pred\feat=0 feat\pred=0
+==============================================================================
+T3: MATCHED-SUBSET AUROCS
+  MIMIC: matched n=62961 pos=2892 | model=0.7934 ratio=0.7660 | model_all=0.7694
+  eICU: matched n=84866 pos=3608 | model=0.7773 ratio=0.7476 | model_all=0.7773
+==============================================================================
+T4: EXCESS DISCRIMINATION SHARE
+  MIMIC: matched-share=90.7%  ORIGINAL(mismatched)=98.8%
+  eICU: matched-share=89.3%  ORIGINAL(mismatched)=89.3%
+==============================================================================
+T5: DIRECTION SANITY
+  MIMIC: mean_ratio pos=1.1024 neg=0.9510 | pos_on_ALL_mean=1.1024
+  eICU: mean_ratio pos=1.0683 neg=0.9318 | pos_on_ALL_mean=1.0683
+==============================================================================
+T6: HONEST FORECASTING SUBSET
+  --MIMIC-- onset NaN: pos=534 neg=64269 n_missing_grid_rows=64803
+     (a) n=73237 pos=1024 posrate=0.0140 AUROC_model=0.7196
+     (b) n=60940 pos=871 AUROC_model=0.7381 ratio=0.6953 share=82.0%
+     dropped by matching: 12297 rows (pos=153, neg=12144)
+  --eICU-- onset NaN: pos=425 neg=75053 n_missing_grid_rows=75478
+     (a) n=82402 pos=1144 posrate=0.0139 AUROC_model=0.7120
+     (b) n=82402 pos=1144 AUROC_model=0.7120 ratio=0.7040 share=96.2%
+     dropped by matching: 0 rows (pos=0, neg=0)
+==============================================================================
+T7: IS cr_ratio_base A FROZEN MODEL FEATURE?
+  in f12_shap_X columns: True  (shap_X shape=(2646, 167))
+  shap_X is a subsample: rows=2646 stays=208
+  f11_full_eval.json top-level keys: selected_n, selected_features_top20, internal_ge1, internal_cal_curve, internal_dca, shap_top15, missing_in_m4, missing_in_eicu, M4_ext, eICU_ext, _meta
+  --- f12_log.txt ---
+
+==============================================================================
+T8: MISSED-THINGS SCAN
+  --- MIMIC top 12 univariate AUROC ---
+      label                        AUROC=0.8594 n_obs=75638 cov=100.0%
+      cr_delta_since_adm           AUROC=0.7831 n_obs=62961 cov=83.2%
+      cr_ratio_base                AUROC=0.7660 n_obs=62961 cov=83.2%
+      cr_full_last                 AUROC=0.7108 n_obs=69934 cov=92.5%
+      cr_last                      AUROC=0.7106 n_obs=62961 cov=83.2%
+      cr_max                       AUROC=0.7105 n_obs=62961 cov=83.2%
+      cr_full_max                  AUROC=0.7102 n_obs=69934 cov=92.5%
+      cr_last48                    AUROC=0.7083 n_obs=67621 cov=89.4%
+      cr_full_locf                 AUROC=0.7080 n_obs=75638 cov=100.0%
+      cr_locf                      AUROC=0.7071 n_obs=68355 cov=90.4%
+      cr_full_min                  AUROC=0.6956 n_obs=69934 cov=92.5%
+      cr_min                       AUROC=0.6952 n_obs=62961 cov=83.2%
+  --- eICU top 12 univariate AUROC ---
+      label                        AUROC=0.8900 n_obs=84866 cov=100.0%
+      cr_ratio_base                AUROC=0.7476 n_obs=84866 cov=100.0%
+      cr_delta_since_adm           AUROC=0.7467 n_obs=84866 cov=100.0%
+      cr_locf                      AUROC=0.6872 n_obs=84866 cov=100.0%
+      cr_full_locf                 AUROC=0.6872 n_obs=84866 cov=100.0%
+      cr_last48                    AUROC=0.6871 n_obs=84866 cov=100.0%
+      cr_max                       AUROC=0.6851 n_obs=84866 cov=100.0%
+      cr_full_max                  AUROC=0.6851 n_obs=84866 cov=100.0%
+      cr_last                      AUROC=0.6842 n_obs=84866 cov=100.0%
+      cr_full_last                 AUROC=0.6842 n_obs=84866 cov=100.0%
+      cr_min                       AUROC=0.6743 n_obs=84866 cov=100.0%
+      cr_full_min                  AUROC=0.6743 n_obs=84866 cov=100.0%
