@@ -1,0 +1,84 @@
+{
+ "ge1_overall": 0.7694,
+ "ge1_early": {
+  "auroc": 0.7768,
+  "ci": [
+   0.749,
+   0.806
+  ],
+  "stays": 3721,
+  "ckpts": 38663,
+  "pos_ckpt": 1794,
+  "event_stays": 370,
+  "period": [
+   "2110-01-18",
+   "2153-05-01"
+  ]
+ },
+ "ge1_late": {
+  "auroc": 0.7614,
+  "ci": [
+   0.731,
+   0.791
+  ],
+  "stays": 3721,
+  "ckpts": 36975,
+  "pos_ckpt": 1631,
+  "event_stays": 361,
+  "period": [
+   "2153-05-05",
+   "2213-04-25"
+  ]
+ },
+ "ge1_late_minus_early": {
+  "delta": -0.016,
+  "ci": [
+   -0.054,
+   0.024
+  ],
+  "p": 0.446
+ },
+ "ge3_overall": 0.9222,
+ "ge3_early": {
+  "auroc": 0.9025,
+  "ci": [
+   0.835,
+   0.959
+  ],
+  "stays": 3721,
+  "ckpts": 38663,
+  "pos_ckpt": 115,
+  "event_stays": 47,
+  "period": [
+   "2110-01-18",
+   "2153-05-01"
+  ]
+ },
+ "ge3_late": {
+  "auroc": 0.9426,
+  "ci": [
+   0.902,
+   0.972
+  ],
+  "stays": 3721,
+  "ckpts": 36975,
+  "pos_ckpt": 111,
+  "event_stays": 40,
+  "period": [
+   "2153-05-05",
+   "2213-04-25"
+  ]
+ },
+ "ge3_late_minus_early": {
+  "delta": 0.038,
+  "ci": [
+   -0.031,
+   0.118
+  ],
+  "p": 0.312
+ },
+ "split": {
+  "rule": "median stay admission timestamp (dates per-patient shifted in MIMIC-IV)",
+  "median_ts": "2153-05-03 14:08:47"
+ }
+}
